@@ -1,12 +1,14 @@
 const express = require('express');
-const {RtcTokenBuilder, RtcRole} = require('agora-access-token');
+const functions = require("firebase-functions").region("asia-northeast3");
+const admin = require("firebase-admin");
 
-const PORT = 8080;
-
+const {RtcTokenBuilder, RtcRole} = require("agora-access-token");
 const APP_ID = "f6b5501a22f64b6b9e26ac9332d93d9f";
 const APP_CERTIFICATE = "07ff45c4d5094a95b58a88531548dd81";
-
 const app = express();
+
+
+admin.initializeApp();
 
 const nocache = (req, resp, next) => {
   resp.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
@@ -15,7 +17,7 @@ const nocache = (req, resp, next) => {
   next();
 }
 
-const generateAccessToken = (req, resp) => {
+exports.generateAccessToken = functions.https.onRequest((req, res) => {
   // set response header
   resp.header('Acess-Control-Allow-Origin', '*');
   // get channel name
@@ -47,10 +49,11 @@ const generateAccessToken = (req, resp) => {
   const token = RtcTokenBuilder.buildTokenWithUid(APP_ID, APP_CERTIFICATE, channelName, uid, role, privilegeExpireTime);
   // return the token
   return resp.json({ 'token': token });
-}
-
-app.get('/access_token', nocache, generateAccessToken);
-
-app.listen(PORT, () => {
-  console.log(`Listening on port: ${PORT}`);
 });
+
+const cors = require('cors');
+app.use(cors({ origin: true }));
+app.use(myMiddleware);
+
+app.get('/:id', (req, res) => res.send(Widgets.getById(req.params.id)));
+exports.widgets = functions.https.onRequest(app);
