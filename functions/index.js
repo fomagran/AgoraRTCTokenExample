@@ -17,13 +17,11 @@ exports.generateToken = functions.https.onCall((data)=>{
   //Agora 역할
   let role = RtcRole.SUBSCRIBER;
 
-  if (data.role == 'publisher') {
+  if (data.role == true) {
     role = RtcRole.PUBLISHER;
   }
-
   //중단되는 시간
   const expireTime = data.expireTime;
-
   //현재시간
   const currentTime = Math.floor(Date.now() / 1000);
   //현재부터 중단되는 시간
