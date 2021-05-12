@@ -22,10 +22,13 @@ exports.generateToken = functions.https.onCall((data)=>{
   }
   //중단되는 시간
   const expireTime = data.expireTime;
+
   //현재시간
   const currentTime = Math.floor(Date.now() / 1000);
+
   //현재부터 중단되는 시간
   const privilegeExpireTime = currentTime + expireTime;
+
   //Agora 토큰
   const token = RtcTokenBuilder.buildTokenWithUid(APP_ID, APP_CERTIFICATE,
       channelName, uid, role, privilegeExpireTime);
